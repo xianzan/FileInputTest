@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>上传文件</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.css" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap-fileinput/4.3.3/css/fileinput.css" rel="stylesheet"/>
+    <script src="https://cdn.bootcss.com/bootstrap-fileinput/4.3.3/js/fileinput.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-fileinput/4.4.2/js/locales/zh.min.js"></script>
+</head>
+<body>
+<div class="container kv-main">
+    <form enctype="multipart/form-data" id="form" action="/save" method="post">
+        <div class="form-group">
+            <input id="file-1" type="file" name="files" multiple="multiple" class="file-loading"/>
+        </div>
+    </form>
+    <div id="kv-error-1" style="margin-top:10px;display:none"></div>
+    <div id="kv-success-1" class="alert alert-success fade in" style="margin-top:10px;display:none"></div>
+</div>
+
+<script>
+    initFileInput("file-1", '/save');
+    function initFileInput(ctrlName, uploadUrl) {
+        var control = $('#' + ctrlName);
+        control.fileinput({
+            resizeImage : true,
+            language : 'zh', //设置语言
+            uploadUrl : uploadUrl,
+            allowedFileExtensions : [ 'jpg', 'png', 'gif','txt','pdf' ],//接收的文件后缀
+            showUpload : true, //是否显示上传按钮
+            showCaption : true,//是否显示标题
+            browseClass : "btn btn-primary", //按钮样式
+            maxFileCount : 10,
+            msgFilesTooMany : "选择图片超过了最大数量",
+            maxFileSize : 20000,
+            maxFilePreviewSize: 10240,
+            uploadAsync: true,
+            showPreview: true,//显示拖拉框
+            elErrorContainer: '#kv-error-1'
+        }).on("filebatchpreupload",function(event, data, id, index) {
+            $('#kv-success-1').html('<h4>Upload Status</h4><ul></ul>').hide();
+        }).on('fileuploaded', function(event, data, id, index) {
+            var fname = data.files[index].name,
+                out = '<li>' + 'Uploaded file # ' + (index + 1) + ' - '  +
+                    fname + ' successfully.' + '</li>';
+            $('#kv-success-1 ul').append(out);
+            $('#kv-success-1').fadeIn('slow');
+        });
+    }
+</script>
+</body>
+</html>
